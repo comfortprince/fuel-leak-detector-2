@@ -12,4 +12,9 @@ class Sensor extends Model
     public function sensorReadings(): HasMany {
         return $this->hasMany(SensorReading::class);
     }
+
+    public function fuelTank()
+    {
+        return $this->belongsTo(FuelTank::class);
+    }
 }

@@ -90,7 +90,7 @@ const CriticalLocations = ({
                             console.log(`View tanks at ${location.location}`);
                           }}
                         >
-                          View tank details
+                          View location details
                           <ArrowForwardIcon fontSize="inherit" sx={{ ml: 0.5 }} />
                         </Typography>
                       </Box>

@@ -19,7 +19,7 @@
     <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <h2 style="color: #e3342f;">🚨 Alert Triggered: {{ ucfirst($policy->alert_type) }}</h2>
 
-        <p><strong>Tank:</strong> {{ $tank->identifier }} ({{ $tank->location }})</p>
+        <p><strong>Tank:</strong> {{ $tank->tank_identifier }} ({{ $tank->location }})</p>
         <p><strong>Triggered At:</strong> {{ now()->toDateTimeString() }}</p>
 
         <hr>

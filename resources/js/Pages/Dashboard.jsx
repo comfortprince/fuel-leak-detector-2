@@ -3,62 +3,54 @@ import TankStatusSummary from './tank_status_summary';
 import AlertStatus from './alert_status';
 import RecentActivity from './recent_activity';
 import UserActions from './user_actions';
-import TankList from './tank_list';
 import AlertTrends from './alert_trends_xcharts';
 import CriticalLocations from './critical_locations';
 
-import { 
-  tankStatusSummary, 
-  alertStatus, 
-  activitiesFunc, 
-  getLocationData, formatAggregateData
-} from '../Helpers/helpers';
+import { usePoll } from '@inertiajs/react'
 
-import { Grid } from '@mui/material';
-import { useEffect } from 'react';
-import { router } from '@inertiajs/react'
-
-import { Button } from '@mui/material';
+import { Grid, Button, Box } from '@mui/material';
+import { useState } from 'react';
 
 function Dashboard({
   auth,
-  fuelTanks,
+  tankStatusSummary,
+  activities,
+  alertCounts,
+  locationStats,
   alertTrendsData
 }) {
-  const tankStatusSummaryObj = tankStatusSummary(fuelTanks)
-  const alertStatusObj = alertStatus(fuelTanks)
-  const locationInfo = getLocationData(fuelTanks)
-  const activities = activitiesFunc(fuelTanks)
+  console.log(tankStatusSummary);
+  
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     router.visit(route('/dashboard'), {
+  //       replace: true, // keeps history clean
+  //       preserveScroll: true
+  //     })
+  //   }, 10000) // 10 seconds
 
-
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      router.visit(route(route().current()), {
-        replace: true, // keeps history clean
-        preserveScroll: true
-      })
-    }, 10000) // 10 seconds
-
-    return () => clearInterval(interval) // cleanup on unmount
-  })
+  //   return () => clearInterval(interval) // cleanup on unmount
+  // })
 
   return (
-    <Auth headerTitle={'Dashboard'}>
+    <Auth 
+      headerTitle={'Dashboard'}
+      pollingToggle={<PollingTrigger/>}
+    >
         <Grid container spacing={2}>
-          {/* <Grid size={3}>
+          <Grid size={3}>
             <TankStatusSummary 
-              totalTanks={tankStatusSummaryObj.totalTanks}
-              tanksWithAlerts={tankStatusSummaryObj.tanksWithAlerts}
-              locations={tankStatusSummaryObj.locations}
+              totalTanks={tankStatusSummary.totalTanks}
+              tanksWithAlerts={tankStatusSummary.tanksWithAlerts}
+              locations={tankStatusSummary.locations}
             />
           </Grid>
 
           <Grid size={3}>
             <AlertStatus 
-              critical={alertStatusObj.critical}
-              warning={alertStatusObj.warning}
-              info={alertStatusObj.info}
+              critical={alertCounts.critical}
+              warning={alertCounts.warning}
+              info={alertCounts.info}
             />
           </Grid>
           
@@ -71,13 +63,13 @@ function Dashboard({
             />
           </Grid>
           <Grid size={12}>
-            <TankList fuelTanks={fuelTanks}/>
+            <CriticalLocations locationData={locationStats}/>
           </Grid>
           <Grid size={12}>
-            <CriticalLocations locationData={locationInfo}/>
-          </Grid> */}
-          <Grid size={12}>
-            <AlertTrends alertTrendsData={alertTrendsData}/>
+            <AlertTrends 
+              alertTrendsData={alertTrendsData.data}
+              filterState={alertTrendsData.filterState}
+            />
           </Grid>
         </Grid>
     </Auth>
@@ -85,3 +77,33 @@ function Dashboard({
 }
 
 export default Dashboard;
+
+const PollingTrigger = () => {
+  const [pollingState, setPollingState] = useState(false);
+  const { start, stop } = usePoll(2000, {}, {
+      autoStart: false,
+  })
+
+  if(pollingState === true){
+    start();
+  } else {
+    stop();
+  }
+
+  return (
+      <Box sx={{ mr: 1, display: 'inline-flex', columnGap: 1 }}>
+          <Button 
+            size='small' 
+            onClick={() => { setPollingState(true) }}
+            variant={pollingState === true ? 'contained' : 'outlined'}
+            color='secondary'
+          >Live Data</Button>
+          <Button 
+            size='small' 
+            onClick={() => { setPollingState(false) }}
+            variant={pollingState === false ? 'contained' : 'outlined'}
+            color='secondary'
+          >No Live Data</Button>
+      </Box>
+  )
+}

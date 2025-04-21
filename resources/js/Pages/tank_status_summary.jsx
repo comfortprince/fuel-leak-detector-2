@@ -7,16 +7,23 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
+import { router } from '@inertiajs/react';
+
 const TankStatusSummary = ({
     totalTanks,
     tanksWithAlerts,
     locations
 }) => {
   const [loading, setLoading] = useState(false);
+
+  const locationArray = Object.keys(locations)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map(key => locations[key]);
   const tankData = {
     totalTanks: totalTanks,
     tanksWithAlerts: tanksWithAlerts,
-    locations: locations
+    locations: locationArray
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -30,8 +37,18 @@ const TankStatusSummary = ({
   };
 
   const handleLocationSelect = (location) => {
-    // Handle location filtering logic here
-    console.log(`Filtering by location: ${location}`);
+    let url = ''
+    
+    if(location != 'all'){
+      url = `/dashboard?location=${location}`
+    } else {
+      url = `/dashboard`
+    }
+
+    router.visit(url,{
+      method: 'get',
+      preserveScroll: true
+    })
     handleClose();
   };
 

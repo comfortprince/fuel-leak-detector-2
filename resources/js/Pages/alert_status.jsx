@@ -5,6 +5,8 @@ import ErrorIcon from '@mui/icons-material/Error';
 import InfoIcon from '@mui/icons-material/Info';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+import { Link } from '@inertiajs/react';
+
 const AlertStatus = ({
   critical,
   warning,
@@ -34,11 +36,12 @@ const AlertStatus = ({
           <Typography variant="h6" component="div">
             Alert Status
           </Typography>
-          <Button 
-            size="small"
-            onClick={() => console.log("Navigate to alerts page")}
-            sx={{ p: 0, display: 'inline-flex', justifyContent: 'end' }}
-          ><ArrowForwardIcon /></Button>
+          <Link href={'/alerts'}>
+            <Button 
+              size="small"
+              sx={{ p: 0, display: 'inline-flex', justifyContent: 'end' }}
+            ><ArrowForwardIcon /></Button>
+          </Link>
         </Box>
         
         <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>

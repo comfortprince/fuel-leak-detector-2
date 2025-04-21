@@ -17,15 +17,19 @@ class FuelTankSeeder extends Seeder
         $locations = [
             'North Facility', 
             'South Facility', 
-            'East Warehouse', 
+            'East Warehouse',
+            'East Warehouse',
+            'North Facility', 
             'West Warehouse', 
             'Central Depot',
-            'Terminal A'
+            'North Facility',
+            'Terminal A',
+            'Central Depot',
         ];
         
         $user = User::first();
         
-        foreach (range(1, 6) as $index) {
+        foreach (range(1, 10) as $index) {
             FuelTank::create([
                 'user_id' => $user->id,
                 'tank_identifier' => 'TANK-' . str_pad($index, 3, '0', STR_PAD_LEFT),

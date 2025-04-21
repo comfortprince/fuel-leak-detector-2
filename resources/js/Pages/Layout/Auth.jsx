@@ -14,7 +14,8 @@ import { Link } from '@inertiajs/react';
 
 function Dashboard({
     headerTitle,
-    children
+    children,
+    pollingToggle
 }) {
   return (
     <Box>
@@ -60,18 +61,26 @@ function Dashboard({
                 pt: 0
             }}
         >
-          <Paper>
+          <Paper
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
             <Typography 
               variant='h5' 
               sx={{
                 p: 1,
-                mb: 1
               }}
             >
               {headerTitle}
             </Typography>
+            <Box>
+              {pollingToggle}
+            </Box>
           </Paper>
-          <Paper sx={{ p: 1 }}>
+          <Paper sx={{ p: 1, mt: 1 }}>
             {children}
           </Paper>
         </Box>
@@ -94,7 +103,7 @@ function Sidebar() {
             elevation: '1'
         }}
     >
-        <Link href={route('dashboard')}>
+        <Link href={'/dashboard'}>
             <Button 
                 variant={`${route().current('dashboard') ? 'contained' : 'outlined'}`}
                 sx={{
@@ -104,7 +113,7 @@ function Sidebar() {
                 Dashboard
             </Button>
         </Link>
-        <Link href={route('tanks.index')}>
+        <Link href={'/tanks'}>
             <Button 
                 variant={`${route().current('tanks.index') ? 'contained' : 'outlined'}`}
                 sx={{
@@ -114,7 +123,7 @@ function Sidebar() {
                 Tanks
             </Button>
         </Link>
-        <Link href={route('alerts.index')}>
+        <Link href={'/alerts'}>
             <Button 
                 variant={`${route().current('alerts.index') ? 'contained' : 'outlined'}`}
                 sx={{

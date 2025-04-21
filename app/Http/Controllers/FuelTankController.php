@@ -107,9 +107,17 @@ class FuelTankController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FuelTank $fuelTank)
+    public function show(FuelTank $tank)
     {
-        //
+        if($tank->user_id !== Auth::id()){
+            abort('403', 'Unauthorized');
+        }
+
+        $tank->load(['sensors', 'alertPolicies']);
+
+        return Inertia::render('Tanks/Show',[
+            'fuelTank' => $tank
+        ]);
     }
 
     /**
@@ -131,8 +139,14 @@ class FuelTankController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(FuelTank $fuelTank)
+    public function destroy(FuelTank $tank)
     {
-        //
+        if($tank->user_id !== Auth::id()){
+            abort('403', 'Unauthorized');
+        }
+
+        FuelTank::destroy($tank->id);
+
+        return to_route('tanks.index');
     }
 }

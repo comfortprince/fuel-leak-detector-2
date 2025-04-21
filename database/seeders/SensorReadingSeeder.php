@@ -28,28 +28,22 @@ class SensorReadingSeeder extends Seeder
         $now = Carbon::now();
         
         // Create readings for each sensor
+        // Preffered num of readings = 17280
         foreach ($sensors as $sensor) {
             $readings = [];
             $currentTime = clone $now;
-            
-            // Preffered num of readings = 17280
 
-            // Generate 17,280 readings per sensor (10-minute intervals going backwards)
-            for ($i = 0; $i < 1000; $i++) {
-                // Generate somewhat realistic values with some natural variation
+            for ($i = 0; $i < 34560; $i++) {
                 if ($sensor->type === 'mq2') {
-                    // MQ2 values (gas concentration): typically 5-20 with occasional spikes
-                    $baseValue = 15.0;
-                    $variation = $this->normalDistribution(0, 5);
-                    
-                    // Add a rare spike every now and then
-                    $spike = (rand(1, 1000) > 995) ? rand(10, 60) : 0;
-                    $value = max(0, min(100, $baseValue + $variation + $spike));
+                    $baseValue = 500;
+                    $variation = $this->normalDistribution(0, 400);
+                    $spike = (rand(1, 1000) > 980) ? rand(1000, 9499) : 0;
+                    $value = max(200, min(10000, $baseValue + $variation + $spike));
                 } else {
-                    // BMP180 values (pressure in bars): typically around 1-3 bars
-                    $baseValue = 2.5;
-                    $variation = $this->normalDistribution(0, 0.5);
-                    $value = max(0.1, min(6.0, $baseValue + $variation));
+                    $baseValue = 90000;
+                    $variation = $this->normalDistribution(0, 10000);
+                    $spike = (rand(1, 1000) > 950) ? rand(10000, 80000) : 0;
+                    $value = max(30000, min(110000, $baseValue + $variation - $spike));
                 }
                 
                 $readings[] = [

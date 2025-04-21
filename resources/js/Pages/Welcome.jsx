@@ -32,7 +32,12 @@ function App() {
             <Stack direction="row" spacing={2}>
               <a href="/auth/login">
                 <Button variant="contained" color="primary">
-                    Sign Up
+                    Log In
+                </Button>
+              </a>
+              <a href="/auth/register">
+                <Button variant="contained" color="secondary">
+                    Register
                 </Button>
               </a>
             </Stack>

@@ -3,71 +3,71 @@
 namespace Database\Seeders;
 
 use App\Models\Alert;
-use App\Models\AlertPolicy;
-use App\Models\Sensor;
-use App\Models\SensorReading;
-use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class AlertSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run()
-    {
-        $alertPolicies = AlertPolicy::all();
-        $now = Carbon::now();
-        $ninetyDaysAgo = (clone $now)->subDays(90);
-        
-        // Count of alerts based on type (rarer for more severe types)
-        $alertCounts = [
-            'info' => rand(7, 12),
-            'warning' => rand(3, 6),
-            'critical' => rand(1, 3),
-        ];
-        
-        foreach ($alertPolicies as $policy) {
-            $tankId = $policy->fuel_tank_id;
-            $mq2Sensor = Sensor::where('fuel_tank_id', $tankId)
-                              ->where('type', 'mq2')
-                              ->first();
-            $bmp180Sensor = Sensor::where('fuel_tank_id', $tankId)
-                                 ->where('type', 'bmp180')
-                                 ->first();
-            
-            // Generate alerts - number depends on alert type
-            $alertCount = $alertCounts[$policy->alert_type];
-            
-            for ($i = 0; $i < $alertCount; $i++) {
-                // Random time within the last 90 days
-                $days = rand(1, 90);
-                $hours = rand(0, 23);
-                $minutes = rand(0, 59);
-                $alertTime = (clone $now)->subDays($days)->setTime($hours, $minutes);
-                
-                // Find readings around this time
-                $mq2Reading = SensorReading::where('sensor_id', $mq2Sensor->id)
-                                          ->where('recorded_at', '<=', $alertTime)
-                                          ->orderBy('recorded_at', 'desc')
-                                          ->first();
-                
-                $bmp180Reading = SensorReading::where('sensor_id', $bmp180Sensor->id)
-                                             ->where('recorded_at', '<=', $alertTime)
-                                             ->orderBy('recorded_at', 'desc')
-                                             ->first();
-                
-                if ($mq2Reading && $bmp180Reading) {
-                    Alert::create([
-                        'alert_policy_id' => $policy->id,
-                        'mq2_reading_id' => $mq2Reading->id,
-                        'bmp180_reading_id' => $bmp180Reading->id,
-                        'triggered_at' => $alertTime,
-                        'resolved' => rand(0, 100) > 30, // 70% chance of being resolved
-                    ]);
-                }
-            }
+    public function run(){
+        $user = User::with([
+            'fuelTanks.alertPolicies',
+            'fuelTanks.sensors'
+        ])->first();
+    
+        foreach ($user->fuelTanks as $fuelTank) {
+            $activePolicies = $fuelTank->alertPolicies->where('policy_status', 'active');
+            if ($activePolicies->isEmpty()) continue;
+    
+            $sensors = $fuelTank->sensors;
+            $sensorMap = $sensors->keyBy('id');
+            $sensorIds = $sensorMap->keys();
+    
+            DB::table('sensor_readings')
+                ->whereIn('sensor_id', $sensorIds)
+                ->orderBy('recorded_at', 'desc')
+                ->chunk(1000, function ($readingsChunk) use ($sensorMap, $activePolicies) {
+                    $grouped = $readingsChunk->groupBy('recorded_at');
+    
+                    foreach ($grouped as $readings) {
+                        $mq2Reading = $this->getReadingByType($readings, $sensorMap, 'mq2');
+                        $bmp180Reading = $this->getReadingByType($readings, $sensorMap, 'bmp180');
+    
+                        if (!$mq2Reading || !$bmp180Reading) continue;
+    
+                        foreach ($activePolicies as $policy) {
+                            $mq2Value = $mq2Reading->value;
+                            $bmpValue = $bmp180Reading->value;
+    
+                            $mq2InRange = $mq2Value > $policy->mq2_min && $mq2Value < $policy->mq2_max;
+                            $bmpInRange = $bmpValue > $policy->bmp180_min && $bmpValue < $policy->bmp180_max;
+    
+                            if ($mq2InRange && $bmpInRange) {
+                                Alert::create([
+                                    'alert_policy_id' => $policy->id,
+                                    'mq2_reading_id' => $mq2Reading->id,
+                                    'bmp180_reading_id' => $bmp180Reading->id,
+                                    'triggered_at' => $bmp180Reading->recorded_at,
+                                    'resolved' => false,
+                                ]);
+                            }
+                        }
+                    }
+                });
+    
+            // break; // optional: only run for first tank
         }
+    }
+
+    private function getReadingByType($readings, $sensorMap, $type)
+    {
+        return $readings->first(function ($reading) use ($sensorMap, $type) {
+            $sensor = $sensorMap[$reading->sensor_id] ?? null;
+            return $sensor && $sensor->type === $type;
+        });
     }
 }

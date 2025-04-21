@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class AlertController extends Controller
@@ -13,9 +14,55 @@ class AlertController extends Controller
      */
     public function index()
     {
-        $alerts = Alert::with(['alertPolicy.fuelTank', 'mq2Reading', 'bmp180Reading'])->get();
+        $locationFilter = request()->input('location', null);
+        $tankFilter = request()->input('fuelTank', null);
+
+        $user = Auth::user();
+        $alerts = null;
+
+        if ($locationFilter && $tankFilter) {
+            $alerts = Alert::with(['alertPolicy.fuelTank', 'mq2Reading', 'bmp180Reading'])
+                ->whereHas('alertPolicy.fuelTank', function ($query) use($user, $locationFilter, $tankFilter) {
+                    $query->where('user_id', $user->id)
+                        ->where('location', $locationFilter)
+                        ->where('tank_identifier', $tankFilter);
+                })
+                ->paginate(10);
+        } else if ($locationFilter) {
+            $alerts = Alert::with(['alertPolicy.fuelTank', 'mq2Reading', 'bmp180Reading'])
+                ->whereHas('alertPolicy.fuelTank', function ($query) use($user, $locationFilter) {
+                    $query->where('user_id', $user->id)
+                        ->where('location', $locationFilter);
+                })
+                ->paginate(10);
+        } else if ($tankFilter) {
+            $alerts = Alert::with(['alertPolicy.fuelTank', 'mq2Reading', 'bmp180Reading'])
+                ->whereHas('alertPolicy.fuelTank', function ($query) use($user, $tankFilter) {
+                    $query->where('user_id', $user->id)
+                        ->where('tank_identifier', $tankFilter);
+                })
+                ->paginate(10);
+        } else {
+            $alerts = Alert::with(['alertPolicy.fuelTank', 'mq2Reading', 'bmp180Reading'])
+                ->whereHas('alertPolicy.fuelTank', function ($query) use($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->paginate(10);
+        }
+
+        $locations = $user->fuelTanks()->select('location')->distinct()->get()->pluck('location')->toArray();
+        $tanksPerLocation = null;
+
+        if($locationFilter){
+            $tanksPerLocation = $user->fuelTanks()->where('location', $locationFilter)->distinct()->get()->pluck('tank_identifier');
+        }else{
+            $tanksPerLocation = $user->fuelTanks()->get()->pluck('tank_identifier');
+        }
+
         return Inertia::render('Alerts/Index',[
-            'alerts' => $alerts
+            'alertsData' => $alerts,
+            'locations' => $locations,
+            'tanksPerLocation' => $tanksPerLocation
         ]);
     }
 

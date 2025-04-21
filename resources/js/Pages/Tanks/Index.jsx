@@ -1,4 +1,5 @@
 import Auth from '../Layout/Auth'
+import { useForm } from '@inertiajs/react';
 
 import { 
   Button, 
@@ -16,12 +17,16 @@ import { Link } from '@inertiajs/react'
 function Index({
   fuelTanks
 }) {
-  console.log(fuelTanks);
+  const { delete: destroy } = useForm({})
+
+  const handleTankDelete = (tankId) => {
+    destroy(`/tanks/${tankId}`);
+  }
   
   return (
     <Auth headerTitle={'Tanks'}>
       <Box>
-        <Link href={route('tanks.create')}>
+        <Link href={'/tanks/create'}>
           <Button variant='contained'>
             Regiter Tank
           </Button>
@@ -29,7 +34,7 @@ function Index({
       </Box>
       <Box sx={{ mt: 2 }}>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table" size='small'>
             <TableHead>
               <TableRow>
                 <TableCell>Tank Identifier</TableCell>
@@ -60,12 +65,19 @@ function Index({
                     {fuelTank.alert_policies.length}
                   </TableCell>
                   <TableCell align="right" sx={{ display: 'inline-flex', columnGap: 1 }}>
-                    <Button variant='contained' color='error'>
+                    <Button 
+                      variant='contained' 
+                      color='error'
+                      size='small'
+                      onClick={()=>{ handleTankDelete(fuelTank.id) }}
+                    >
                       Delete
                     </Button>
-                    <Button variant='contained'>
-                      Edit
-                    </Button>
+                    <Link href={`/tanks/${fuelTank.id}`}>
+                      <Button variant='contained' size='small'>
+                        Show
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
