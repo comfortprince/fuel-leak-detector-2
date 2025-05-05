@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   AppBar,
   Box,
@@ -17,10 +18,38 @@ function Dashboard({
     children,
     pollingToggle
 }) {
+  const appBarRef = useRef(null);
+  const [appBarHeight, setAppBarHeight] = useState(0);
+
+  const dashMainHeaderRef = useRef(null);
+  const [dashMainHeaderHeight, setDashMainHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    if (dashMainHeaderRef.current) {
+      setDashMainHeaderHeight(dashMainHeaderRef.current.offsetHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (appBarRef.current) {
+      setAppBarHeight(appBarRef.current.offsetHeight);
+    }
+  }, []);
+  
   return (
-    <Box>
+    <Box
+      sx={{
+        height: '100vh'
+      }}
+    >
       {/* Navigation */}
-      <AppBar position="static" color="default" elevation={1} sx={{ bgcolor: 'white' }}>
+      <AppBar 
+        ref={appBarRef}
+        position="static" 
+        color="default" 
+        elevation={1} 
+        sx={{ bgcolor: 'white' }}
+      >
         <Container maxWidth="lg">
           <Stack
             direction="row"
@@ -45,44 +74,64 @@ function Dashboard({
         </Container>
       </AppBar>
 
-      {/* Hero Section */}
+      {/* Dashboard Section */}
       <Box
         sx={{
-          pb: 10,
-          mt: 1,
           display: 'flex',
+          height: `calc(100vh - ${appBarHeight}px)`,
         }}
       >
-        <Sidebar/>
-        <Box 
-            sx={{
-                flexGrow: '1',
-                p: '1rem',
-                pt: 0
-            }}
+        <Box
+          sx={{ 
+            height: '100%',
+            width: '16rem',
+            p: 1
+          }}
         >
-          <Paper
+          <Sidebar/>
+        </Box>
+        <Box 
+          sx={{
+            height: '100%',
+            width: 'calc(100% - 16rem)',
+          }}
+        >
+          <Box
+            ref={dashMainHeaderRef}
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              p: 1
             }}
           >
-            <Typography 
-              variant='h5' 
+            <Paper
               sx={{
-                p: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
             >
-              {headerTitle}
-            </Typography>
+              <Typography 
+                variant='h5' 
+                sx={{
+                  p: 1,
+                }}
+              >
+                {headerTitle}
+              </Typography>
+              <Box>
+                {pollingToggle}
+              </Box>
+            </Paper>
+          </Box>
+          <Box 
+            sx={{ 
+              height: `calc(100% - ${dashMainHeaderHeight}px)`,
+              overflow: 'auto',
+              p: 1,
+            }}>
             <Box>
-              {pollingToggle}
+              {children}
             </Box>
-          </Paper>
-          <Paper sx={{ p: 1, mt: 1 }}>
-            {children}
-          </Paper>
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -94,13 +143,14 @@ export default Dashboard;
 function Sidebar() {
     return <Paper 
         sx={{
-            width: '15rem',
+            width: '100%',
             p: '1rem',
             display: 'flex',
             flexDirection: 'column',
             rowGap: '0.5rem',
             backgroundColor: 'white',
-            elevation: '1'
+            elevation: '1',
+            height: '100%'
         }}
     >
         <Link href={'/dashboard'}>
@@ -131,6 +181,16 @@ function Sidebar() {
                 }}
             >
                 Alerts
+            </Button>
+        </Link>
+        <Link href={route('users.index')}>
+            <Button 
+                variant={`${route().current('users.index') ? 'contained' : 'outlined'}`}
+                sx={{
+                    width: '100%'
+                }}
+            >
+                Add Users
             </Button>
         </Link>
     </Paper>

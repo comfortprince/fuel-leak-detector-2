@@ -13,6 +13,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    // User Roles
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_IT = 'IT';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,7 +26,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'google_id'
+        'owner_id',
+        'role'
     ];
 
     /**

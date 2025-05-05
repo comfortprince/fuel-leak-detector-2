@@ -16,10 +16,28 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         if(User::count() === 0){
-            User::factory()->create([
+            // Add supervisor
+            $owner = User::factory()->create([
                 'name' => 'Lynn',
                 'email' => 'lynn.flds.system@gmail.com',
                 'password' => 'password'
+            ]);
+
+            // Add surbodinates
+            User::factory()->create([
+                'name' => 'Jane',
+                'email' => 'jane.flds.system@gmail.com',
+                'password' => 'password',
+                'role' => 'admin',
+                'owner_id' => $owner->id
+            ]);
+
+            User::factory()->create([
+                'name' => 'Peter',
+                'email' => 'peter.flds.system@gmail.com',
+                'password' => 'password',
+                'role' => 'IT',
+                'owner_id' => $owner->id
             ]);
         }
         

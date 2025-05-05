@@ -47,6 +47,7 @@ class FuelTankExport implements FromQuery, WithHeadings
                 'sr_bmp180.recorded_at as bmp180_recorded_at',
             ])
             ->where('fuel_tanks.user_id', 1)
-            ->orderBy('alerts.triggered_at', 'desc');
+            ->orderBy('alerts.triggered_at', 'desc')
+            ->limit(2);
         }
 }

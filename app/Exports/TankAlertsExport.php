@@ -12,9 +12,13 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 class TankAlertsExport implements WithTitle, WithHeadings, FromQuery
 {
     private $fuelTank;
+    private $startDate;
+    private $endDate;
 
-    public function __construct($fuelTank) {
+    public function __construct($fuelTank, $startDate, $endDate) {
         $this->fuelTank = $fuelTank;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
     }
 
     /**
@@ -32,8 +36,6 @@ class TankAlertsExport implements WithTitle, WithHeadings, FromQuery
             'Alert Message',
             'Resolution Status',
             'Triggered At',
-            'MQ2 Recorded At',
-            'BMP180 Recorded At',
         ];
     }
 
@@ -51,10 +53,9 @@ class TankAlertsExport implements WithTitle, WithHeadings, FromQuery
                 'alert_policies.alert_message',
                 'alerts.resolved',
                 'alerts.triggered_at',
-                'sr_mq2.recorded_at as mq2_recorded_at',
-                'sr_bmp180.recorded_at as bmp180_recorded_at',
             ])
-            ->where('fuel_tanks.user_id', $this->fuelTank->user_id)
-            ->orderBy('alerts.triggered_at', 'desc');
+            ->where('fuel_tanks.id', $this->fuelTank->id)
+            ->whereBetween('alerts.triggered_at', [$this->startDate, $this->endDate])
+            ->orderBy('alerts.triggered_at', 'asc');
     }
 }

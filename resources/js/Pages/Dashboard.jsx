@@ -19,19 +19,6 @@ function Dashboard({
   locationStats,
   alertTrendsData
 }) {
-  console.log(tankStatusSummary);
-  
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     router.visit(route('/dashboard'), {
-  //       replace: true, // keeps history clean
-  //       preserveScroll: true
-  //     })
-  //   }, 10000) // 10 seconds
-
-  //   return () => clearInterval(interval) // cleanup on unmount
-  // })
-
   return (
     <Auth 
       headerTitle={'Dashboard'}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AlertPolicy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AlertPolicyController extends Controller
 {
@@ -60,6 +61,13 @@ class AlertPolicyController extends Controller
      */
     public function destroy(AlertPolicy $alertPolicy)
     {
-        //
+        $tank = $alertPolicy->fuelTank;
+
+        if($tank->user_id !== Auth::id()){
+            abort('403', 'Unauthorized');
+        }
+
+        AlertPolicy::destroy($alertPolicy->id);
+        return to_route('tanks.show', $tank->id);
     }
 }

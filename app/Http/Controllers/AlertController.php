@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alert;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -17,8 +18,16 @@ class AlertController extends Controller
         $locationFilter = request()->input('location', null);
         $tankFilter = request()->input('fuelTank', null);
 
-        $user = Auth::user();
+        $user = null;
         $alerts = null;
+
+        if(Auth::user()->role === null){
+            $user = Auth::user();
+        }
+
+        if(Auth::user()->role === User::ROLE_ADMIN || Auth::user()->role === User::ROLE_IT){
+            $user = User::find(Auth::user()->owner_id);
+        }
 
         if ($locationFilter && $tankFilter) {
             $alerts = Alert::with(['alertPolicy.fuelTank', 'mq2Reading', 'bmp180Reading'])

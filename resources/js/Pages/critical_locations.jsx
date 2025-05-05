@@ -5,10 +5,18 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ErrorIcon from '@mui/icons-material/Error';
 
+import ExportCriticalLocationsModal from './export_critical_locations';
+
 const CriticalLocations = ({
   locationData
 }) => {
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const [locationToDownload, setLocationToDownload] = useState('');
+
+  const handleOpen = () => { setOpen(true) }
+  const handleClose = () => { setOpen(false) }
   
   // Get chip color based on risk level
   const getRiskChipColor = (riskLevel) => {
@@ -81,18 +89,21 @@ const CriticalLocations = ({
                       {' '}
                       {location.tanks.join(', ')}
                       <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Typography
-                          variant="caption"
-                          color="primary"
-                          sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            console.log(`View tanks at ${location.location}`);
-                          }}
+                        <Box
+                          onClick={() => { 
+                            setLocationToDownload(location.location); 
+                            handleOpen()
+                          }}                          
                         >
-                          View location details
-                          <ArrowForwardIcon fontSize="inherit" sx={{ ml: 0.5 }} />
-                        </Typography>
+                          <Typography
+                            variant="caption"
+                            color="primary"
+                            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                          >
+                            Download location info
+                            <ArrowForwardIcon fontSize="inherit" sx={{ ml: 0.5 }} />
+                          </Typography>
+                        </Box>
                       </Box>
                     </React.Fragment>
                   }
@@ -113,6 +124,7 @@ const CriticalLocations = ({
             {locationData.filter(loc => loc.alertCount > 0).length} locations with active alerts
           </Typography>
         </Box>
+        <ExportCriticalLocationsModal open={open} handleClose={handleClose} location={locationToDownload} />
       </CardContent>
     </Card>
   );
