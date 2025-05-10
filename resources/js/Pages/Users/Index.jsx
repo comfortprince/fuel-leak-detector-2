@@ -19,7 +19,8 @@ import EditUserModal from './edit_user';
 import { useForm } from '@inertiajs/react';
 
 export default function Index ({
-    users
+    users,
+    auth
 }) {
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
     const [userToEdit, setUserToEdit] = useState(null);
@@ -37,7 +38,7 @@ export default function Index ({
         destroy(route('users.destroy', user.id));
     }
 
-    return <Auth headerTitle={'Users'}>
+    return <Auth headerTitle={'Users'} auth={auth}>
         <Box>
             <Button variant='contained' onClick={openCreateUserModal}>
                 Add User

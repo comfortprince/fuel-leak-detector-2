@@ -26,7 +26,10 @@ class FuelTankController extends Controller
             $user = Auth::user();
         }
 
-        if(Auth::user()->role === User::ROLE_ADMIN || Auth::user()->role === User::ROLE_IT){
+        if(Auth::user()->role === User::ROLE_ADMIN 
+            || Auth::user()->role === User::ROLE_IT
+            || Auth::user()->role === User::ROLE_FIELD_OPERATOR)
+        {
             $user = User::find(Auth::user()->owner_id);
         }
 
@@ -34,7 +37,8 @@ class FuelTankController extends Controller
             ->with(['sensors', 'alertPolicies'])
             ->get();
         return Inertia::render('Tanks/Index',[
-            'fuelTanks' => $fuelTanks
+            'fuelTanks' => $fuelTanks,
+            'auth' => Auth::user()
         ]);
     }
 
@@ -43,7 +47,9 @@ class FuelTankController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Tanks/Create');
+        return Inertia::render('Tanks/Create', [
+            'auth' => Auth::user()
+        ]);
     }
 
     /**
@@ -53,12 +59,12 @@ class FuelTankController extends Controller
     {
         $owner = null;
 
-        if(Auth::user()->role !== null){
+        if(Auth::user()->role === null){
             $owner = Auth::user();   
-        }else if(Auth::user()->role !== User::ROLE_ADMIN){
+        }else if(Auth::user()->role === User::ROLE_ADMIN){
             $owner = User::findOrFail(Auth::user()->owner_id);
         }else{
-            abort(403);
+            abort(403, 'You are not authorized to register a tank');
         }
 
         $validated = $request->validate([

@@ -140,7 +140,7 @@ function Policy({
                         <TextField 
                             id="" 
                             size="small" 
-                            label={ policyData.mq2_min ? '' : 'MQ2_min' } 
+                            label={ policyData.mq2_min ? '' : 'MQ2_min (ppm)' } 
                             variant="outlined"
                             value={policyData.mq2_min} 
                             onChange={(e) => { handleChange(e, 'mq2_min') }}
@@ -152,7 +152,7 @@ function Policy({
                         <TextField 
                             id="" 
                             size="small" 
-                            label={ policyData.mq2_max ? '' : 'MQ2_max' } 
+                            label={ policyData.mq2_max ? '' : 'MQ2_max (ppm)' } 
                             variant="outlined"
                             value={policyData.mq2_max} 
                             onChange={(e) => { handleChange(e, 'mq2_max') }}
@@ -173,7 +173,7 @@ function Policy({
                         <TextField 
                             id="" 
                             size="small" 
-                            label={ policyData.bmp180_min ? '' : 'BMP180_min' } 
+                            label={ policyData.bmp180_min ? '' : 'BMP180_min (Pa)' } 
                             variant="outlined"
                             value={policyData.bmp180_min} 
                             onChange={(e) => { handleChange(e, 'bmp180_min') }}
@@ -185,7 +185,7 @@ function Policy({
                         <TextField 
                             id="" 
                             size="small" 
-                            label={ policyData.bmp180_max ? '' : 'BMP180_max' } 
+                            label={ policyData.bmp180_max ? '' : 'BMP180_max (Pa)' } 
                             variant="outlined"
                             value={policyData.bmp180_max} 
                             onChange={(e) => { handleChange(e, 'bmp180_max') }}

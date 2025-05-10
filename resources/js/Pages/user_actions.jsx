@@ -80,7 +80,7 @@ const UserActions = ({
           </Menu>
         </Box>
         
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 1.5 }}>
+        {/* <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 1.5 }}>
           <Link
             href={route('tanks.create')}
           >
@@ -110,7 +110,7 @@ const UserActions = ({
           >
             View Reports
           </Button>
-        </Box>
+        </Box> */}
         
         <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>

@@ -25,7 +25,10 @@ class AlertController extends Controller
             $user = Auth::user();
         }
 
-        if(Auth::user()->role === User::ROLE_ADMIN || Auth::user()->role === User::ROLE_IT){
+        if(Auth::user()->role === User::ROLE_ADMIN 
+            || Auth::user()->role === User::ROLE_IT
+            || Auth::user()->role === User::ROLE_FIELD_OPERATOR)
+        {
             $user = User::find(Auth::user()->owner_id);
         }
 
@@ -71,7 +74,8 @@ class AlertController extends Controller
         return Inertia::render('Alerts/Index',[
             'alertsData' => $alerts,
             'locations' => $locations,
-            'tanksPerLocation' => $tanksPerLocation
+            'tanksPerLocation' => $tanksPerLocation,
+            'auth' => Auth::user()
         ]);
     }
 

@@ -30,7 +30,7 @@ export default function TankForm({
                 <TextField 
                     id="" 
                     size="small" 
-                    label={ data.tank_identifier ? '' : 'Identifier' } 
+                    label={ data.tank_identifier ? '' : 'e.g Tank-001' } 
                     variant="outlined"
                     value={data.tank_identifier}
                     onChange={(e) => { setData('tank_identifier', e.target.value) }}

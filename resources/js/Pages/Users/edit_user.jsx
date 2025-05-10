@@ -136,6 +136,7 @@ export default function EditUserModal({open, handleClose, user}) {
                     >
                       <MenuItem value={'IT'}>IT</MenuItem>
                       <MenuItem value={'admin'}>Admin</MenuItem>
+                      <MenuItem value={'field_operator'}>Field Operator</MenuItem>
                     </Select>
                     <FormHelperText>{errors.role}</FormHelperText>
                   </FormControl>

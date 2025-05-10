@@ -9,7 +9,8 @@ import { Link } from '@inertiajs/react';
 export default function Index({
     alertsData,
     locations,
-    tanksPerLocation
+    tanksPerLocation,
+    auth
 }) {
     const alerts = alertsData.data
 
@@ -34,7 +35,7 @@ export default function Index({
     }
     
     return (<>
-        <Auth headerTitle={'Alerts'}>
+        <Auth headerTitle={'Alerts'} auth={auth}>
             <Box 
                 sx={{
                     mb: 1,

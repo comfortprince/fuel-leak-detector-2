@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('owner_id')->nullable()->after('id');
-            $table->enum('role', ['IT', 'admin'])->nullable()->default(null)->after('owner_id');
+            $table->enum('role', ['IT', 'admin', 'field_operator'])->nullable()->default(null)->after('owner_id');
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('set null');
         });
     }

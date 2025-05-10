@@ -16,6 +16,7 @@ class User extends Authenticatable
     // User Roles
     public const ROLE_ADMIN = 'admin';
     public const ROLE_IT = 'IT';
+    public const ROLE_FIELD_OPERATOR = 'field_operator';
 
     /**
      * The attributes that are mass assignable.
@@ -58,4 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(FuelTank::class, 'user_id');
     }
 
+    public function surbodinates() {
+        if($this->role === null){
+            return User::where('owner_id', $this->id)->get();
+        } else {
+            return [];
+        }
+    }
 }

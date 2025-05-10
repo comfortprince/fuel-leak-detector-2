@@ -32,7 +32,7 @@ function SensorForm({
                     size="small" 
                     label="" 
                     variant="outlined" 
-                    defaultValue={data.mq2_identifier ? data.mq2_identifier : 'MQ2'} 
+                    defaultValue={data.mq2_identifier ? data.mq2_identifier : 'MQ2 pressure sensor'} 
                     disabled
                 />
             </Box>
@@ -42,7 +42,7 @@ function SensorForm({
                     size="small" 
                     label="" 
                     variant="outlined" 
-                    defaultValue={data.bmp180_identifier ? data.bmp180_identifier :  'BMP180'} 
+                    defaultValue={data.bmp180_identifier ? data.bmp180_identifier :  'BMP180 gas sensor'} 
                     disabled
                 />
             </Box>

@@ -15,7 +15,8 @@ import {
 import { Link } from '@inertiajs/react'
 
 function Index({
-  fuelTanks
+  fuelTanks,
+  auth
 }) {
   const { delete: destroy } = useForm({})
 
@@ -24,7 +25,7 @@ function Index({
   }
   
   return (
-    <Auth headerTitle={'Tanks'}>
+    <Auth headerTitle={'Tanks'} auth={auth}>
       <Box>
         <Link href={'/tanks/create'}>
           <Button variant='contained'>
@@ -46,7 +47,7 @@ function Index({
               </TableRow>
             </TableHead>
             <TableBody>
-              {fuelTanks.map((fuelTank) => (
+              {fuelTanks && fuelTanks.map((fuelTank) => (
                 <TableRow
                   key={fuelTank.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

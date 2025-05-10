@@ -7,16 +7,28 @@ import {
   Container,
   Stack,
   Typography,
-  Paper
+  Paper,
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
+
 import { Droplet } from 'lucide-react';
 
-import { Link } from '@inertiajs/react';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ListItemText from '@mui/material/ListItemText';
+
+import { Link, usePage } from '@inertiajs/react';
 
 function Dashboard({
     headerTitle,
     children,
-    pollingToggle
+    pollingToggle,
+    auth
 }) {
   const appBarRef = useRef(null);
   const [appBarHeight, setAppBarHeight] = useState(0);
@@ -88,7 +100,7 @@ function Dashboard({
             p: 1
           }}
         >
-          <Sidebar/>
+          <Sidebar auth={auth}/>
         </Box>
         <Box 
           sx={{
@@ -140,19 +152,40 @@ function Dashboard({
 
 export default Dashboard;
 
-function Sidebar() {
+function Sidebar({auth}) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const { auth: Auth } = usePage().props;
+  
+
     return <Paper 
         sx={{
             width: '100%',
             p: '1rem',
             display: 'flex',
             flexDirection: 'column',
+            justifyContent: 'space-between',
             rowGap: '0.5rem',
             backgroundColor: 'white',
             elevation: '1',
             height: '100%'
         }}
     >
+      <Box
+        sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: '0.5rem',
+        }}
+      >
         <Link href={'/dashboard'}>
             <Button 
                 variant={`${route().current('dashboard') ? 'contained' : 'outlined'}`}
@@ -193,5 +226,59 @@ function Sidebar() {
                 Add Users
             </Button>
         </Link>
+      </Box>
+      <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar
+            sx={{ width: 32, height: 32, mr: 1.5 }}
+            alt="User Avatar"
+            src="#!"
+          />
+          <Box>
+            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+              {Auth.name}                
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {Auth.role === 'IT' ? 'IT' : Auth.role === 'field_operator' ? 'Field Operator' : 'Administrator'}
+              {/* {auth.role} */}
+            </Typography>
+          </Box>
+          <Box sx={{ ml: 'auto' }}>
+            <IconButton 
+              size="small" 
+              onClick={handleClick}>
+              <SettingsIcon fontSize="small" />
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                <Link href={'#!'}>
+                  Profile
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>
+                  <Link href={route('logout')}>
+                    Logout
+                  </Link>
+                </ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
+        </Box>
+      </Box>
     </Paper>
 }

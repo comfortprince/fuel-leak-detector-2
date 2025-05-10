@@ -7,7 +7,7 @@ import { Button, Box, Typography, TextField, Select, InputLabel, MenuItem, Chip 
 
 import { useForm } from '@inertiajs/react';
 
-function Create() {
+function Create({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         tank_identifier: '',
         tank_location: '',
@@ -22,7 +22,7 @@ function Create() {
     }
 
     return (
-        <Auth headerTitle={'Regiter New Tank'}>
+        <Auth headerTitle={'Regiter New Tank'} auth={auth}>
             <form action="#!" onSubmit={handleSubmit}>
                 <Box
                     sx={{

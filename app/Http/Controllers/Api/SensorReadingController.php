@@ -99,8 +99,11 @@ class SensorReadingController extends Controller
                         'resolved' => false,
                     ]);
 
-                    // Send Alert Email
-                    Mail::to(env('MAIL_FROM_ADDRESS'))->send(new FldsAlert($alert));
+                    // Send Alert Emails
+                    $owner = $tank->user;
+                    $ownerEmail = $owner->email;
+                    $subordinateEmails = $owner->surbodinates()->pluck('email')->toArray();
+                    Mail::to([$ownerEmail, ...$subordinateEmails])->send(new FldsAlert($alert));
                 }
             }
         }

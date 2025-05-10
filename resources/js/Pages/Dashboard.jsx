@@ -23,9 +23,10 @@ function Dashboard({
     <Auth 
       headerTitle={'Dashboard'}
       pollingToggle={<PollingTrigger/>}
+      auth={auth}
     >
         <Grid container spacing={2}>
-          <Grid size={3}>
+          <Grid size={4}>
             <TankStatusSummary 
               totalTanks={tankStatusSummary.totalTanks}
               tanksWithAlerts={tankStatusSummary.tanksWithAlerts}
@@ -33,7 +34,7 @@ function Dashboard({
             />
           </Grid>
 
-          <Grid size={3}>
+          <Grid size={4}>
             <AlertStatus 
               critical={alertCounts.critical}
               warning={alertCounts.warning}
@@ -41,13 +42,8 @@ function Dashboard({
             />
           </Grid>
           
-          <Grid size={3}>
+          <Grid size={4}>
             <RecentActivity activities={activities} />
-          </Grid>
-          <Grid size={3}>
-            <UserActions
-              auth={auth}
-            />
           </Grid>
           <Grid size={12}>
             <CriticalLocations locationData={locationStats}/>

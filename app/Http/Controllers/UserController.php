@@ -31,7 +31,8 @@ class UserController extends Controller
         }
 
         return Inertia::render('Users/Index', [
-            'users' => []
+            'users' => [],
+            'auth' => Auth::user()
         ]);
     }
 
@@ -52,7 +53,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'string', 'min:8', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|string|in:admin,IT'
+            'role' => 'required|string|in:admin,IT,field_operator'
         ]);
 
         User::create([
@@ -60,7 +61,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'owner_id' => Auth::user()->id,
-            'role' => $validated['role']
+            'role' => $validated['role'],
         ]);
 
         return to_route('users.index');
