@@ -5,29 +5,32 @@
     <title>Alert Triggered</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 20px;">
-    {{-- @php
-        $color = ''
+    @php
+        $color = '';
         if($policy->alert_type === 'warning'){
-            $color = 'rgb(169, 113, 0)'
+            $color = 'rgb(169, 113, 0)';
         } else if($policy->alert_type === 'critical') {
             $color = '#e3342f';
         } else {
             $color = 'rgb(0, 59, 169)';
         }
-    @endphp --}}
+    @endphp
 
     <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h2 style="color: #e3342f;">🚨 Alert Triggered: {{ ucfirst($policy->alert_type) }}</h2>
+        <h2 style="color: {{ $color }};">🚨 Alert Triggered: {{ ucfirst($policy->alert_type) }}</h2>
 
         <p><strong>Tank:</strong> {{ $tank->tank_identifier }} ({{ $tank->location }})</p>
         <p><strong>Triggered At:</strong> {{ now()->toDateTimeString() }}</p>
+        <a href="https://www.google.com/maps/dir/?api=1&destination={{ $tank->gps_latitude }},{{ $tank->gps_longitude }}" target="_blank">
+            <strong>Directions to:</strong> {{ $tank->tank_identifier }}
+        </a>
 
         <hr>
 
         <h4>🔍 Sensor Readings</h4>
         <ul>
-            <li><strong>MQ2 Value:</strong> {{ $mq2Reading->value }} (Recorded at {{ $mq2Reading->recorded_at }})</li>
-            <li><strong>BMP180 Value:</strong> {{ $bmp180Reading->value }} (Recorded at {{ $bmp180Reading->recorded_at }})</li>
+            <li><strong>MQ2 Value:</strong> {{ $mq2Reading->value . ' ppm' }} (Recorded at {{ $mq2Reading->recorded_at }})</li>
+            <li><strong>BMP180 Value:</strong> {{ $bmp180Reading->value . ' Pa' }} (Recorded at {{ $bmp180Reading->recorded_at }})</li>
         </ul>
 
         <hr>

@@ -34,6 +34,8 @@ class FuelTankSeeder extends Seeder
                 'user_id' => $user->id,
                 'tank_identifier' => 'TANK-' . str_pad($index, 3, '0', STR_PAD_LEFT),
                 'location' => $locations[$index - 1],
+                'gps_latitude' => fake()->randomFloat(6, -22.42, -15.61),
+                'gps_longitude' => fake()->randomFloat(6, 25.24, 33.06),
             ]);
         }
     }

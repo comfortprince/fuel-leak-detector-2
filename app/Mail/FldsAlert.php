@@ -10,9 +10,9 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class FldsAlert extends Mailable implements ShouldQueue
+class FldsAlert extends Mailable 
 {
-    use Queueable, SerializesModels;
+    use  SerializesModels;
 
     public $policy, $tank, $mq2Reading, $bmp180Reading;
 

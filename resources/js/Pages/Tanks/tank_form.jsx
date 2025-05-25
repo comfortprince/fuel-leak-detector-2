@@ -50,6 +50,30 @@ export default function TankForm({
                     helperText={errors.tank_location}
                 />
             </Box>
+            <Box>
+                <TextField 
+                    id="" 
+                    size="small" 
+                    label={ data.gps_latitude ? '' : 'GPS Latitude' } 
+                    variant="outlined"
+                    value={data.gps_latitude}
+                    onChange={(e) => { setData('gps_latitude', e.target.value) }}
+                    error={errors.gps_latitude ? true : false}
+                    helperText={errors.gps_latitude}
+                />
+            </Box>
+            <Box>
+                <TextField 
+                    id="" 
+                    size="small" 
+                    label={ data.gps_longitude ? '' : 'GPS Longitude' } 
+                    variant="outlined"
+                    value={data.gps_longitude}
+                    onChange={(e) => { setData('gps_longitude', e.target.value) }}
+                    error={errors.gps_longitude ? true : false}
+                    helperText={errors.gps_longitude}
+                />
+            </Box>
         </Box>
     </Box>
 }

@@ -13,6 +13,8 @@ function Create({ auth }) {
         tank_location: '',
         mq2_identifier: '',
         bmp180_identifier: '',
+        gps_latitude: '',
+        gps_longitude: '',
         alert_policies: []
     })
 

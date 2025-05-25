@@ -22,11 +22,23 @@ export default function Show({
                     <Typography variant='h6'>
                         Policies
                     </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: 2 }}>
+                    {fuelTank.alert_policies.length !== 0 ? <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: 2 }}>
                         {fuelTank.alert_policies.map((policy) => {
                             return ( <PolicyInfo key={policy.id} policy={policy}/> )
                         })}
-                    </Box>
+                    </Box> : <Box 
+                        sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: '#f5f5f5',
+                            rowGap: 2,
+                            padding: 2,
+                        }}
+                    >
+                        No Policies Registered
+                    </Box>}
                 </Box>
             </Box>
         </Auth>

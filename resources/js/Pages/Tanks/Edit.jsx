@@ -12,6 +12,8 @@ export default function Edit({ fuelTank }) {
         id: fuelTank.id,
         tank_identifier: fuelTank.tank_identifier,
         tank_location: fuelTank.location,
+        gps_latitude: fuelTank.gps_latitude,
+        gps_longitude: fuelTank.gps_longitude,
         mq2_identifier: fuelTank.sensors.find(sensor => sensor.type === "mq2").sensor_identifier,
         bmp180_identifier: fuelTank.sensors.find(sensor => sensor.type === "bmp180").sensor_identifier,
         alert_policies: fuelTank.alert_policies

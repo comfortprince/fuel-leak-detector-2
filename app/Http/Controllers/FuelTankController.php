@@ -70,6 +70,8 @@ class FuelTankController extends Controller
         $validated = $request->validate([
             'tank_identifier' => 'required|string|max:255|unique:fuel_tanks,identifier',
             'tank_location' => 'required|string|max:255',
+            'gps_latitude' => 'required|numeric|between:-90,90',
+            'gps_longitude' => 'required|numeric|between:-180,180',
             'alert_policies' => 'array',
             'alert_policies.*.bmp180_min' => 'required|numeric',
             'alert_policies.*.bmp180_max' => 'required|numeric|gte:alert_policies.*.bmp180_min',
@@ -88,6 +90,8 @@ class FuelTankController extends Controller
                 'user_id' => $owner->id,
                 'tank_identifier' => $validated['tank_identifier'],
                 'location' => $validated['tank_location'],
+                'gps_latitude' => $validated['gps_latitude'],
+                'gps_longitude' => $validated['gps_longitude'],
             ]);
 
             $sensorTypes = ['mq2', 'bmp180'];
@@ -181,6 +185,8 @@ class FuelTankController extends Controller
         $validated = $request->validate([
             'tank_identifier' => 'required|string|max:255|unique:fuel_tanks,identifier',
             'tank_location' => 'required|string|max:255',
+            'gps_latitude' => 'required|numeric|between:-90,90',
+            'gps_longitude' => 'required|numeric|between:-180,180',
             'alert_policies' => 'array',
             'alert_policies.*.id' => 'numeric',
             'alert_policies.*.bmp180_min' => 'required|numeric',
@@ -198,6 +204,8 @@ class FuelTankController extends Controller
         try {
             $tank->tank_identifier = $validated['tank_identifier'];
             $tank->location = $validated['tank_location'];
+            $tank->gps_latitude = $validated['gps_latitude'];
+            $tank->gps_longitude = $validated['gps_longitude'];
 
             $tank->save();
 
